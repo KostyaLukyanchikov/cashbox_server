@@ -1,0 +1,8 @@
+DB_HOST: 0.0.0.0
+DB_PORT: 32768
+DB_LOGIN: 'postgres'
+DB_PASSWORD: 'postgrespw'
+DB_DATABASE: 'cashbox'
+
+SERVER_PORT: 5000
+SERVER_HOST: 192.168.2.12

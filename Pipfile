@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+sqlalchemy = "*"
+fastapi = "<0.100.0"
+uvicorn = "*"
+websockets = "*"
+asyncpg = "*"
+greenlet = "*"
+flake8 = "*"
+pyyaml = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"
