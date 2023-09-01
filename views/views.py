@@ -120,7 +120,7 @@ async def websocket_endpoint(websocket: WebSocket, cashbox_connection_key: str, 
                     if data_dict["status"] == "success":
                         await SuccessTask(data_dict["number"], db).process()
                     elif data_dict["status"] == "error":
-                        await ErrorTask(data_dict["number"], "error", db).process()
+                        await ErrorTask(data_dict["number"], data_dict["data"], db).process()
             except Exception:
                 pass
 
