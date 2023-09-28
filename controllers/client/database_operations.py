@@ -19,9 +19,9 @@ async def create_client_in_db(db: AsyncSession, client_data: dict):
             Client.cashbox_connection_key: client_data["cashbox_connection_key"],
         }
     )
-    result = await db.execute(query)
+    await db.execute(query)
     await db.commit()
-    return result
+    return await get_client_by_external_id_from_db(db, client_data["external_id"])
 
 
 async def get_clients_from_db(db: AsyncSession, offset=0, limit=100):
