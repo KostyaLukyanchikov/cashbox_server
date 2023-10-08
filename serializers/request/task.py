@@ -74,8 +74,17 @@ class PaymentModel(BaseModel):
     sum: float
 
 
+class ClientInfo(BaseModel):
+    emailOrPhone: str
+    address: Optional[str]
+    vatin: Optional[str]
+    name: Optional[str]
+
+
 class TaskRequestModel(BaseModel):
     type: TaskType
+    electronically: bool = False
+    clientInfo: Optional[ClientInfo]
     taxationType: Optional[TaxationType]
     operator: Optional[OperatorModel]
     items: Optional[List[ItemModel]]

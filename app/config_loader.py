@@ -10,6 +10,7 @@ class BaseConfig(BaseModel):
     DB_PORT: int = 5432
     SERVER_HOST: str
     SERVER_PORT: str
+    APP_KEY: str
 
 
 def load_conf():
