@@ -45,14 +45,15 @@ class GetTask:
 
 
 class SuccessTask:
-    def __init__(self, task_number: str, db: AsyncSession):
+    def __init__(self, task_number: str, message: str, db: AsyncSession):
         self.task_number: str = task_number
+        self.message: str = message
         self.db = db
 
     async def process(self):
         if not await get_task_by_number_from_db(self.db, self.task_number):
             raise NotFoundError(detail=f"Task was not found by number {self.task_number}")
-        await change_task_status_in_db(self.db, self.task_number, TaskStatusEnum.SUCCESS.value)
+        await change_task_status_in_db(self.db, self.task_number, TaskStatusEnum.SUCCESS.value, self.message)
 
 
 class ErrorTask:

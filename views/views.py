@@ -1,11 +1,12 @@
 import json
 
-from fastapi import APIRouter, Depends, WebSocketException
+from fastapi import APIRouter, Depends, WebSocketException, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.websockets import WebSocket, WebSocketDisconnect
 
+from app import logger
 from app.dependencies import get_db
-from app.exceptions import ForbiddenError, WebsocketError
+from app.exceptions import ForbiddenError, WebsocketError, AppError
 from controllers.client.client_operations import (
     CreateClient,
     GetClient,
@@ -36,15 +37,18 @@ class ConnectionManager:
     async def connect(self, websocket: WebSocket, client_id: str):
         await websocket.accept()
         self.active_connections.append({"websocket": websocket, "client_id": client_id})
+        logger.info("WS_CONNECTED: " + client_id)
 
     def disconnect(self, websocket: WebSocket, client_id: str):
         self.active_connections.remove({"websocket": websocket, "client_id": client_id})
+        logger.info("WS_DISCONNECTED: " + client_id)
 
     async def send_personal_message(self, message: str, client_id: str):
         websocket = self.get_connection_by_client_id(client_id)
         if not websocket:
             raise WebsocketError(message="Client is not connected")
         await websocket.send_text(message)
+        logger.info("WS_SENT: " + client_id + ": " + message)
 
     async def broadcast(self, message: str):
         for connection in self.active_connections:
@@ -94,7 +98,11 @@ async def send_task(client_external_id: str, task: TaskRequestModel, db: AsyncSe
     task_number = await CreateTask(task, client.id, db).process()
     task_msg = task.dict()
     task_msg.update({"number": task_number})
-    await manager.send_personal_message(json.dumps(task_msg), client.cashbox_connection_key)
+    try:
+        await manager.send_personal_message(json.dumps(task_msg), client.cashbox_connection_key)
+    except Exception as exp:
+        await ErrorTask(task_number, str(exp), db).process()
+        raise exp
     return task_msg
 
 
@@ -114,15 +122,16 @@ async def websocket_endpoint(websocket: WebSocket, cashbox_connection_key: str, 
     try:
         while True:
             data = await websocket.receive_text()
+            logger.info("WS_RECEIVED: " + cashbox_connection_key + ": " + data)
             try:
                 data_dict = json.loads(data)
                 if "number" and "status" in data_dict:
                     if data_dict["status"] == "success":
-                        await SuccessTask(data_dict["number"], db).process()
+                        await SuccessTask(data_dict["number"], data_dict["data"], db).process()
                     elif data_dict["status"] == "error":
                         await ErrorTask(data_dict["number"], data_dict["data"], db).process()
-            except Exception:
-                pass
+            except Exception as exp:
+                logger.error(exp)
 
     except WebSocketDisconnect:
         manager.disconnect(websocket, cashbox_connection_key)

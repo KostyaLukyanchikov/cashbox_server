@@ -24,15 +24,6 @@ class ErrorMessages(Enum):
 
 
 @dataclass
-class WebsocketError(Exception):
-    status_code: int = 500
-    error: str = ErrorCodes.EX_WEBSOCKET_ERROR.value
-    message: Optional[str] = ErrorMessages.DEFAULT_MESSAGE.value
-
-    log: bool = True
-
-
-@dataclass
 class AppError(Exception):
     # HTTP код ответа
     status_code: int = 500
@@ -57,6 +48,18 @@ class AppError(Exception):
             data["reason"] = repr(self.__cause__)
 
         return data
+
+    def __str__(self):
+        return str(self.get_data())
+
+
+@dataclass
+class WebsocketError(AppError):
+    status_code: int = 503
+    error: str = ErrorCodes.EX_WEBSOCKET_ERROR.value
+    message: Optional[str] = ErrorMessages.DEFAULT_MESSAGE.value
+
+    log: bool = True
 
 
 class CheckPostponedError(AppError):
