@@ -9,6 +9,10 @@ class TaskType(str, Enum):
     SELL_RETURN = "sellReturn"
     OPEN_SHIFT = "openShift"
     CLOSE_SHIFT = "closeShift"
+    SELL_CORRECTION = "sellCorrection"
+    BUY_CORRECTION = "buyCorrection"
+    SELL_RETURN_CORRECTION = "sellReturnCorrection"
+    BUY_RETURN_CORRECTION = "buyReturnCorrection"
 
 
 class TaxationType(str, Enum):

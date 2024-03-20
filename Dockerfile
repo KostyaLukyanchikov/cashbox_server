@@ -6,6 +6,7 @@ WORKDIR /usr/src/app
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
+ENV TZ="Europe/Moscow"
 
 
 # Install dependencies
