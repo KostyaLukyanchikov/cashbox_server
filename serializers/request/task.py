@@ -52,6 +52,14 @@ class TaxType(str, Enum):
     VAT120 = "vat120"
 
 
+class MeasurementUnitType(str, Enum):
+    PIECE = "piece"
+    GRAM = "gram"
+    KILOGRAM = "kilogram"
+    TON = "ton"
+    OTHER_UNITS = "otherUnits"
+
+
 class TaxModel(BaseModel):
     type: TaxType
     sum: Optional[float]
@@ -66,6 +74,7 @@ class ItemModel(BaseModel):
     paymentMethod: PaymentMethodType
     paymentObject: PaymentObjectType
     tax: TaxModel
+    measurementUnit: Optional[MeasurementUnitType]
 
 
 class PaymentType(str, Enum):
