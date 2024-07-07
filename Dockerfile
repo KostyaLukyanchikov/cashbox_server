@@ -25,8 +25,6 @@ RUN chmod +x ./entrypoint.sh
 
 # Publish network port
 EXPOSE 8000
-EXPOSE 80
-EXPOSE 443
 
 # Execute script to start the application web server
 ENTRYPOINT ["./entrypoint.sh"]

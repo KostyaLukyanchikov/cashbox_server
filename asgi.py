@@ -7,4 +7,4 @@ from app.config_loader import config
 app: FastAPI = create_app()
 
 if __name__ == "__main__":
-    uvicorn.run("asgi:app", host=config.SERVER_HOST, port=5000, log_level="debug", reload=True)
+    uvicorn.run("asgi:app", host=config.SERVER_HOST, port=config.SERVER_PORT, log_level="debug", reload=True)

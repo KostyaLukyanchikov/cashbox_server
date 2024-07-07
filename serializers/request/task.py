@@ -57,7 +57,31 @@ class MeasurementUnitType(str, Enum):
     GRAM = "gram"
     KILOGRAM = "kilogram"
     TON = "ton"
+    CENTIMETER = "centimeter"
+    DECIMETER = "decimeter"
+    METER = "meter"
+    SQUARE_CENTIMETER = "squareCentimeter"
+    SQUARE_DECIMETER = "squareDecimeter"
+    SQUARE_METER = "squareMeter"
+    MILLIMETER = "millimeter"
+    LITER = "liter"
+    CUBIC_METER = "cubicMeter"
+    KILOWATT_HOUR = "kilowattHour"
+    GKAL = "gkal"
+    DAY = "day"
+    HOUR = "hour"
+    MINUTE = "minute"
+    SECOND = "second"
+    KILOBYTE = "kilobyte"
+    MEGABYTE = "megabyte"
+    GIGABYTE = "gigabyte"
+    TERABYTE = "terabyte"
     OTHER_UNITS = "otherUnits"
+
+
+class CorrectionType(str, Enum):
+    SELF = "self"
+    INSTRUCTION = "instruction"
 
 
 class TaxModel(BaseModel):
@@ -102,3 +126,10 @@ class TaskRequestModel(BaseModel):
     operator: Optional[OperatorModel]
     items: Optional[List[ItemModel]]
     payments: Optional[List[PaymentModel]]
+
+    correctionType: Optional[CorrectionType]
+    correctionBaseDate: Optional[str]
+    correctionBaseNumber: Optional[str]
+    paymentsPlace: Optional[str]
+    paymentsAddress: Optional[str]
+    machineNumber: Optional[str]

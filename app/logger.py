@@ -36,7 +36,7 @@ LOGGING_CONFIG = {
         },
         "filelog": {
             "class": "logging.handlers.RotatingFileHandler",
-            "filename": "/var/log/cashbox_server.log",
+            "filename": "cashbox_server.log",
             "formatter": "default",
             "backupCount": 1,
             "maxBytes": 3 * MEGABYTE,

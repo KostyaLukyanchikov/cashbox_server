@@ -4,9 +4,9 @@ services:
   cashbox_server:
     ports:
       - "8000:8000"
-      - "80:80"
-      - "443:443"
     build:
       context: .
     environment:
       - TZ=Europe/Moscow
+    expose:
+      - "8000:8000"

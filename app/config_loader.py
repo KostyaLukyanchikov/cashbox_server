@@ -9,7 +9,7 @@ class BaseConfig(BaseModel):
     DB_HOST: str
     DB_PORT: int = 5432
     SERVER_HOST: str
-    SERVER_PORT: str
+    SERVER_PORT: int
     APP_KEY: str
 
 
