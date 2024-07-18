@@ -1,12 +1,12 @@
 import json
 
-from fastapi import APIRouter, Depends, WebSocketException, Response
+from fastapi import APIRouter, Depends, WebSocketException
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.websockets import WebSocket, WebSocketDisconnect
 
 from app import logger
 from app.dependencies import get_db
-from app.exceptions import ForbiddenError, WebsocketError, AppError
+from app.exceptions import ForbiddenError, WebsocketError, TaskError
 from controllers.client.client_operations import (
     CreateClient,
     GetClient,
@@ -129,7 +129,8 @@ async def websocket_endpoint(websocket: WebSocket, cashbox_connection_key: str, 
                     if data_dict["status"] == "success":
                         await SuccessTask(data_dict["number"], data_dict["data"], db).process()
                     elif data_dict["status"] == "error":
-                        await ErrorTask(data_dict["number"], data_dict["data"], db).process()
+                        error = TaskError(message=data_dict["data"])
+                        await ErrorTask(data_dict["number"], str(error), db).process()
             except Exception as exp:
                 logger.error(exp)
 

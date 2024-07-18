@@ -17,6 +17,7 @@ class ErrorCodes(Enum):
     EX_NOT_FOUND = "EX_NOT_FOUND"
     EX_FORBIDDEN = "EX_FORBIDDEN"
     EX_WEBSOCKET_ERROR = "EX_WEBSOCKET_ERROR"
+    EX_TASK_EXEC_ERROR = "EX_TASK_EXEC_ERROR"
 
 
 class ErrorMessages(Enum):
@@ -41,9 +42,14 @@ class AppError(Exception):
 
     def get_data(self) -> Dict[str, Any]:
         data = asdict(self)
+
         data.pop("status_code", None)
         data.pop("headers", None)
         data.pop("log", None)
+        data.pop("detail", None)
+
+        if self.detail:
+            data["detail"] = self.detail
         if self.__cause__:
             data["reason"] = repr(self.__cause__)
 
@@ -71,6 +77,11 @@ class CheckPostponedError(AppError):
 
     def get_data(self) -> Dict[str, Any]:
         return {"cancelPostponement": self.cancel_postponement}
+
+
+@dataclass
+class TaskError(AppError):
+    error: str = ErrorCodes.EX_TASK_EXEC_ERROR.value
 
 
 @dataclass

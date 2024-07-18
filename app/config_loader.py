@@ -1,3 +1,5 @@
+import os
+
 import yaml
 from pydantic import BaseModel
 
@@ -14,7 +16,8 @@ class BaseConfig(BaseModel):
 
 
 def load_conf():
-    with open("config.yaml", "r") as stream:
+    config_path = os.environ.get("CONFIG_PATH", "config.yaml")
+    with open(config_path, "r") as stream:
         try:
             data = yaml.safe_load(stream)
             return BaseConfig.parse_obj(data)

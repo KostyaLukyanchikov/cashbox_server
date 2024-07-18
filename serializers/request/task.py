@@ -13,6 +13,7 @@ class TaskType(str, Enum):
     BUY_CORRECTION = "buyCorrection"
     SELL_RETURN_CORRECTION = "sellReturnCorrection"
     BUY_RETURN_CORRECTION = "buyReturnCorrection"
+    GET_DEVICE_STATUS = "getDeviceStatus"
 
 
 class TaxationType(str, Enum):
@@ -33,14 +34,20 @@ class ItemType(str, Enum):
 
 class PaymentMethodType(str, Enum):
     FULL_PREPAYMENT = "fullPrepayment"
-    FULL_PAYMENT = "fullPayment"
     PREPAYMENT = "prepayment"
+    ADVANCE = "advance"
+    FULL_PAYMENT = "fullPayment"
+    PARTIAL_PAYMENT = "partialPayment"
+    CREDIT = "credit"
+    CREDIT_PAYMENT = "creditPayment"
 
 
 class PaymentObjectType(str, Enum):
     COMMODITY = "commodity"
     JOB = "job"
     SERVICE = "service"
+    PAYMENT = "payment"
+    DEPOSIT = "deposit"
 
 
 class TaxType(str, Enum):
@@ -104,6 +111,8 @@ class ItemModel(BaseModel):
 class PaymentType(str, Enum):
     CASH = "cash"
     ELECTRONICALLY = "electronically"
+    PREPAID = "prepaid"
+    CREDIT = "credit"
 
 
 class PaymentModel(BaseModel):

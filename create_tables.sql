@@ -2,6 +2,13 @@
 
 -- DROP TABLE IF EXISTS public.client;
 
+CREATE SEQUENCE client_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
 CREATE TABLE IF NOT EXISTS public.client
 (
     id integer NOT NULL DEFAULT nextval('client_id_seq'::regclass),
@@ -21,6 +28,13 @@ CREATE TABLE IF NOT EXISTS public.client
 
 -- DROP TABLE IF EXISTS public.task;
 
+CREATE SEQUENCE task_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
 CREATE TABLE IF NOT EXISTS public.task
 (
     id bigint NOT NULL DEFAULT nextval('task_id_seq'::regclass),
@@ -32,4 +46,4 @@ CREATE TABLE IF NOT EXISTS public.task
     status_message text COLLATE pg_catalog."default",
     CONSTRAINT task_pkey PRIMARY KEY (id),
     CONSTRAINT task_number_key UNIQUE ("number")
-)
+);
