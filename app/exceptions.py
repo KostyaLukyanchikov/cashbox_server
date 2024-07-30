@@ -1,3 +1,4 @@
+import json
 from dataclasses import dataclass, asdict
 from enum import Enum
 from typing import Optional, Dict, Any
@@ -56,7 +57,7 @@ class AppError(Exception):
         return data
 
     def __str__(self):
-        return str(self.get_data())
+        return json.dumps(self.get_data())
 
 
 @dataclass
