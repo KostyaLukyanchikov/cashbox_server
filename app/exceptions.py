@@ -57,7 +57,7 @@ class AppError(Exception):
         return data
 
     def __str__(self):
-        return json.dumps(self.get_data())
+        return json.dumps(self.get_data(), ensure_ascii=False)
 
 
 @dataclass

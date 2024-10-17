@@ -3,10 +3,31 @@ version: '3'
 services:
   cashbox_server:
     ports:
-      - "8000:8000"
+      - "8001:8000"
     build:
       context: .
     environment:
       - TZ=Europe/Moscow
-    expose:
-      - "8000:8000"
+      - CONFIG_PATH=config.yaml
+    volumes:
+      - ./cashbox_server.log:/usr/src/app/cashbox_server.log
+    networks:
+      - cashbox_network
+
+  cashbox_db:
+    image: postgres:latest
+    container_name: cashbox_db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgrespw
+      - POSTGRES_DB=cashbox
+    ports:
+      - '5432:5432'
+    volumes:
+      - $HOME/volumes/cashbox/postgres:/var/lib/postgresql/data
+    networks:
+      - cashbox_network
+
+networks:
+  cashbox_network:
+    external: true

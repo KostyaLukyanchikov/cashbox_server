@@ -36,11 +36,25 @@ class ConnectionManager:
 
     async def connect(self, websocket: WebSocket, client_id: str):
         await websocket.accept()
+
+        for conn in self.active_connections:
+            if conn["client_id"] == client_id:
+                raise WebSocketException(403, reason="Client with same conn_key already connected")
+
         self.active_connections.append({"websocket": websocket, "client_id": client_id})
         logger.info("WS_CONNECTED: " + client_id)
 
-    def disconnect(self, websocket: WebSocket, client_id: str):
-        self.active_connections.remove({"websocket": websocket, "client_id": client_id})
+    async def disconnect(self, websocket: WebSocket, client_id: str, reason: str):
+        try:
+            await websocket.close(reason=reason)
+        except (WebSocketDisconnect, WebSocketException, RuntimeError):
+            pass
+
+        try:
+            self.active_connections.remove({"websocket": websocket, "client_id": client_id})
+        except ValueError:
+            pass
+
         logger.info("WS_DISCONNECTED: " + client_id)
 
     async def send_personal_message(self, message: str, client_id: str):
@@ -114,12 +128,13 @@ async def get_task(number: str, db: AsyncSession = Depends(get_db)):
 # CLIENT ROUTES
 @websocket_routes.websocket("/task/{cashbox_connection_key}")
 async def websocket_endpoint(websocket: WebSocket, cashbox_connection_key: str, db: AsyncSession = Depends(get_db)):
-    client: Client = await GetClientByCashboxKey(cashbox_connection_key, db).process()
-    if not client:
-        raise WebSocketException(403)
-
-    await manager.connect(websocket, cashbox_connection_key)
     try:
+        await manager.connect(websocket, cashbox_connection_key)
+
+        client: Client = await GetClientByCashboxKey(cashbox_connection_key, db).process()
+        if not client:
+            raise WebSocketException(403, reason="Client not found")
+
         while True:
             data = await websocket.receive_text()
             logger.info("WS_RECEIVED: " + cashbox_connection_key + ": " + data)
@@ -134,5 +149,6 @@ async def websocket_endpoint(websocket: WebSocket, cashbox_connection_key: str, 
             except Exception as exp:
                 logger.error(exp)
 
-    except WebSocketDisconnect:
-        manager.disconnect(websocket, cashbox_connection_key)
+    except (WebSocketException, WebSocketDisconnect) as e:
+        logger.error(e)
+        await manager.disconnect(websocket, cashbox_connection_key, reason=e.reason)
